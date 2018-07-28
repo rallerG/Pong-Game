@@ -1,3 +1,4 @@
 # Pong-Game
-The classic pong game \n
+The classic pong game 
+
 My first time using canvas
