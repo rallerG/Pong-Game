@@ -1,5 +1,10 @@
+var leftPlayer;
+var rightPlayer;
+
 window.onload = function() {
     gameArea.start();
+    leftPlayer = new component(20, 150, "white", 30, gameArea.canvas.height / 2 - 75);
+    rightPlayer = new component(20, 150, "white", gameArea.canvas.width - 50, gameArea.canvas.height / 2 - 75);
 }
 
 
@@ -13,9 +18,17 @@ var gameArea = {
         document.body.insertBefore(this.canvas, document.body.childNodes[0]);
         placeOutline();
     }
-
 }
 
+function component(width, height, color, x, y) {
+    this.width = width;
+    this.height = height;
+    this.x = x;
+    this.y = y; 
+    ctx = gameArea.context;
+    ctx.fillStyle = color;
+    ctx.fillRect(this.x, this.y, this.width, this.height);
+}
 
 function placeOutline() {
     var canvas = gameArea.canvas;
