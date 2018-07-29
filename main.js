@@ -1,18 +1,25 @@
 window.onload = function() {
-    var canvas = document.getElementById("myCanvas");
-    resizeCanvas(canvas);
-    placeOutline(canvas)
+    gameArea.start();
 }
 
 
-function resizeCanvas(canvas) {
-    canvas.width = (window.innerWidth - 16);
-    canvas.height = (window.innerHeight - 20);      //edit for right format fx 200
+var gameArea = {
+    canvas : document.createElement("canvas"),
+    start : function() {
+        //resize canvas
+        this.canvas.width = (window.innerWidth - 16);
+        this.canvas.height = (window.innerHeight - 20);
+        this.context = this.canvas.getContext("2d");
+        document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+        placeOutline();
+    }
+
 }
 
 
-function placeOutline(canvas) {
-    var ctx = canvas.getContext("2d");
+function placeOutline() {
+    var canvas = gameArea.canvas;
+    var ctx = gameArea.context;
     ctx.fillStyle = "#FFFFFF";
     ctx.fillRect(20, 20, (canvas.width - 40), 30);
     ctx.fillRect(20, (canvas.height - 50), (canvas.width - 40), 30);
