@@ -19,6 +19,13 @@ var gameArea = {
         this.context = this.canvas.getContext("2d");
         document.body.insertBefore(this.canvas, document.body.childNodes[0]);
         this.interval = setInterval(updateGameArea, 20);
+        window.addEventListener('keydown', function (e) {
+            gameArea.keys = (gameArea.keys || []);
+            gameArea.keys[e.keyCode] = true;
+        })
+        window.addEventListener('keyup', function (e) {
+            gameArea.keys[e.keyCode] = false; 
+        })
     },
     clear : function() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -31,10 +38,16 @@ function component(width, height, color, x, y) {
     this.height = height;
     this.x = x;
     this.y = y; 
+    this.speedX = 0;
+    this.speedY = 0;
     this.update = function() {
         ctx = gameArea.context;
         ctx.fillStyle = color;
         ctx.fillRect(this.x, this.y, this.width, this.height);
+    }
+    this.newPos = function() {
+        this.x += this.speedX;
+        this.y += this.speedY;
     }
 }
 
@@ -53,14 +66,56 @@ function placeOutline() {
     ctx.stroke();
 }
 
+
 function updateGameArea() {
     gameArea.clear();
     placeOutline();
+    rightPlayer.speedY = 0; 
+    if (gameArea.keys && gameArea.keys[38]) {rightPlayer.speedY = -5; }
+    if (gameArea.keys && gameArea.keys[40]) {rightPlayer.speedY = 5; }
+    leftPlayer.speedY = 0; 
+    if (gameArea.keys && gameArea.keys[87]) {leftPlayer.speedY = -5; }
+    if (gameArea.keys && gameArea.keys[83]) {leftPlayer.speedY = 5; }
+    onEdge();
+    leftPlayer.newPos();
+    rightPlayer.newPos();
+    ball.newPos();
     leftPlayer.update();
     rightPlayer.update();
     ball.update();
 }
 
+function onEdge() {
+    if (leftPlayer.y > (gameArea.canvas.height - 50 - 150 - 15)) {
+        leftPlayer.y = (gameArea.canvas.height - 50 - 150 - 15);
+    } else if (leftPlayer.y < (50 + 15)) {
+        leftPlayer.y = (50 + 15);
+    } else{}
+    
+    if (rightPlayer.y > (gameArea.canvas.height - 50 - 150 - 15)) {
+        rightPlayer.y = (gameArea.canvas.height - 50 - 150 - 15);
+    } else if (rightPlayer.y < (50 + 15)) {
+        rightPlayer.y = (50 + 15);
+    } else{}
+}
+
 function setScore() {
     
 }
+
+
+// function moveUp() {
+//     this.speedY -= 1;
+// }
+
+// function moveDown() {
+//     this.speedY += 1;
+// }
+
+// function moveLeft() {
+//     this.speedX -= 1;
+// }
+
+// function moveRight() {
+//     this.speedX += 1;
+// }
