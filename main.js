@@ -7,8 +7,12 @@ window.onload = function() {
     leftPlayer = new component(20, 150, "white", 30, gameArea.canvas.height / 2 - 75);
     rightPlayer = new component(20, 150, "white", gameArea.canvas.width - 50, gameArea.canvas.height / 2 - 75);
     ball = new component(25, 25, "white", gameArea.canvas.width / 2, gameArea.canvas.height / 2);
+    leftScore = new component("70px", "Verdana", "white", gameArea.canvas.width/4 - 35, 130, "text");
+    rightScore = new component("70px", "Verdana", "white", (gameArea.canvas.width/4) * 3, 130, "text");
     ball.speedY = 0;
-    ball.speedX = 7;
+    ball.speedX = 15;
+    leftScore.text = leftPlayer.points;
+    rightScore.text = rightPlayer.points;
 }
 
 
@@ -35,7 +39,8 @@ var gameArea = {
 }
 
 
-function component(width, height, color, x, y) {
+function component(width, height, color, x, y, type) {
+    this.type = type;
     this.width = width;
     this.height = height;
     this.x = x;
@@ -45,8 +50,14 @@ function component(width, height, color, x, y) {
     this.points = 0;
     this.update = function() {
         ctx = gameArea.context;
+        if (this.type == "text") {
+            ctx.font = this.width + " " + this.height;
+            ctx.fillStyle = color;
+            ctx.fillText(this.text, this.x, this.y);
+        } else {
         ctx.fillStyle = color;
         ctx.fillRect(this.x, this.y, this.width, this.height);
+        }
     }
     this.newPos = function() {
         this.x += this.speedX;
@@ -86,6 +97,8 @@ function updateGameArea() {
     leftPlayer.update();
     rightPlayer.update();
     ball.update();
+    leftScore.update();
+    rightScore.update();
 }
 
 function onCollision() {
@@ -125,6 +138,8 @@ function onCollision() {
 
 function goal(player) {
     player.points += 1;
+    leftScore.text = leftPlayer.points;
+    rightScore.text = rightPlayer.points;
     resetPositions();
 }
 
