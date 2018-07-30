@@ -42,6 +42,7 @@ function component(width, height, color, x, y) {
     this.y = y; 
     this.speedX = 0;
     this.speedY = 0;
+    this.points = 0;
     this.update = function() {
         ctx = gameArea.context;
         ctx.fillStyle = color;
@@ -78,7 +79,7 @@ function updateGameArea() {
     leftPlayer.speedY = 0; 
     if (gameArea.keys && gameArea.keys[87]) {leftPlayer.speedY = -5; }
     if (gameArea.keys && gameArea.keys[83]) {leftPlayer.speedY = 5; }
-    onEdge();
+    onCollision();
     leftPlayer.newPos();
     rightPlayer.newPos();
     ball.newPos();
@@ -87,7 +88,7 @@ function updateGameArea() {
     ball.update();
 }
 
-function onEdge() {
+function onCollision() {
     if (leftPlayer.y > (gameArea.canvas.height - 50 - 150 - 15)) {      //collide on top
         leftPlayer.y = (gameArea.canvas.height - 50 - 150 - 15);
     } else if (leftPlayer.y < (50 + 15)) {      //colide on bottom
@@ -101,37 +102,51 @@ function onEdge() {
     } 
     
     if (ball.y > (gameArea.canvas.height - 50 - 25)) {      //bounce ball on bottom
-        ball.speedY -= (2 * ball.speedY);
+        bounceY();
     } else if (ball.y < (50)) {     //bounce ball on top
-        ball.speedY += -(2 * ball.speedY);
+        bounceY();
     } 
     
     //ball bounce on player
-    // if (ball.y > (gameArea.canvas.height - 50 - 25)) {      //bounce ball on bottom
-    //     ball.speedY -= (2 * ball.speedY);
-    // } else if (ball.y < (50)) {     //bounce ball on top
-    //     ball.y += (2 * ball.speedY);
-    // } 
-    
+    if (ball.x + ball.width >= rightPlayer.x && ball.y + ball.height > rightPlayer.y && ball.y < rightPlayer.y + rightPlayer.height) {
+        bounceX();
+    } else if (ball.x <= leftPlayer.x + leftPlayer.width && ball.y + ball.height > leftPlayer.y && ball.y < leftPlayer.y + leftPlayer.height) {
+        bounceX();
+    } else {
+        if (ball.x + ball.width < leftPlayer.x) {     //Ball past left player
+            //ScorePoint to right player
+            goal(rightPlayer);
+        } else if (ball.x > rightPlayer.x + rightPlayer.width) {   //Ball past right player
+            //ScorePoint to left player
+            goal(leftPlayer);
+        } 
+    }
 }
 
-function setScore() {
-    
+function goal(player) {
+    player.points += 1;
+    resetPositions();
+}
+
+function resetPositions() {
+    ball.x = gameArea.canvas.width / 2;
+    ball.y = gameArea.canvas.height / 2;
+    leftPlayer.y = gameArea.canvas.height / 2 - 75;
+    rightPlayer.y = gameArea.canvas.height / 2 - 75;
+    bounceX();
+    if (ball.speedY < 0) {
+        ball.speedY = 1;
+    } else {
+        ball.speedY = -1;
+    }
 }
 
 
-// function moveUp() {
-//     this.speedY -= 1;
-// }
 
-// function moveDown() {
-//     this.speedY += 1;
-// }
+function bounceX() {
+    ball.speedX += -(2 * ball.speedX);
+}
 
-// function moveLeft() {
-//     this.speedX -= 1;
-// }
-
-// function moveRight() {
-//     this.speedX += 1;
-// }
+function bounceY() {
+    ball.speedY += -(2 * ball.speedY);
+}
