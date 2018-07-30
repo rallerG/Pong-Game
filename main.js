@@ -84,21 +84,26 @@ function placeOutline() {
 function updateGameArea() {
     gameArea.clear();
     placeOutline();
-    rightPlayer.speedY = 0; 
-    if (gameArea.keys && gameArea.keys[38]) {rightPlayer.speedY = -5; }
-    if (gameArea.keys && gameArea.keys[40]) {rightPlayer.speedY = 5; }
-    leftPlayer.speedY = 0; 
-    if (gameArea.keys && gameArea.keys[87]) {leftPlayer.speedY = -5; }
-    if (gameArea.keys && gameArea.keys[83]) {leftPlayer.speedY = 5; }
-    onCollision();
+    playerMovement();
     leftPlayer.newPos();
     rightPlayer.newPos();
     ball.newPos();
+    onCollision();
     leftPlayer.update();
     rightPlayer.update();
     ball.update();
     leftScore.update();
     rightScore.update();
+}
+
+function playerMovement() {
+    rightPlayer.speedY = 0; 
+    if (gameArea.keys && gameArea.keys[38]) {rightPlayer.speedY = -5; }
+    if (gameArea.keys && gameArea.keys[40]) {rightPlayer.speedY = 5; }
+
+    leftPlayer.speedY = 0; 
+    if (gameArea.keys && gameArea.keys[87]) {leftPlayer.speedY = -5; }
+    if (gameArea.keys && gameArea.keys[83]) {leftPlayer.speedY = 5; }
 }
 
 function onCollision() {
@@ -155,8 +160,6 @@ function resetPositions() {
         ball.speedY = -1;
     }
 }
-
-
 
 function bounceX() {
     ball.speedX += -(2 * ball.speedX);
