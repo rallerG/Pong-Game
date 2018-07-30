@@ -9,8 +9,8 @@ window.onload = function() {
     ball = new component(25, 25, "white", gameArea.canvas.width / 2, gameArea.canvas.height / 2);
     leftScore = new component("70px", "Verdana", "white", gameArea.canvas.width/4 - 35, 130, "text");
     rightScore = new component("70px", "Verdana", "white", (gameArea.canvas.width/4) * 3, 130, "text");
-    ball.speedY = 0;
-    ball.speedX = 15;
+    ball.speedY = 0;        //Adjust starting angle
+    ball.speedX = 15;       //Adjust horizontal speed
     leftScore.text = leftPlayer.points;
     rightScore.text = rightPlayer.points;
 }
@@ -128,8 +128,10 @@ function onCollision() {
     //ball bounce on player
     if (ball.x + ball.width >= rightPlayer.x && ball.y + ball.height > rightPlayer.y && ball.y < rightPlayer.y + rightPlayer.height) {
         bounceX();
+        bounceAngle(rightPlayer);
     } else if (ball.x <= leftPlayer.x + leftPlayer.width && ball.y + ball.height > leftPlayer.y && ball.y < leftPlayer.y + leftPlayer.height) {
         bounceX();
+        bounceAngle(leftPlayer);
     } else {
         if (ball.x + ball.width < leftPlayer.x) {     //Ball past left player
             //ScorePoint to right player
@@ -139,6 +141,11 @@ function onCollision() {
             goal(leftPlayer);
         } 
     }
+}
+
+function bounceAngle(player) {
+    ball.speedY = -(((player.y + 75) - (ball.y + ball.height/2)) / 10);         //Adjust divider for higher/lower angle
+    
 }
 
 function goal(player) {
