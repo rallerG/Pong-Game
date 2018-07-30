@@ -7,6 +7,8 @@ window.onload = function() {
     leftPlayer = new component(20, 150, "white", 30, gameArea.canvas.height / 2 - 75);
     rightPlayer = new component(20, 150, "white", gameArea.canvas.width - 50, gameArea.canvas.height / 2 - 75);
     ball = new component(25, 25, "white", gameArea.canvas.width / 2, gameArea.canvas.height / 2);
+    ball.speedY = 0;
+    ball.speedX = 7;
 }
 
 
@@ -86,17 +88,31 @@ function updateGameArea() {
 }
 
 function onEdge() {
-    if (leftPlayer.y > (gameArea.canvas.height - 50 - 150 - 15)) {
+    if (leftPlayer.y > (gameArea.canvas.height - 50 - 150 - 15)) {      //collide on top
         leftPlayer.y = (gameArea.canvas.height - 50 - 150 - 15);
-    } else if (leftPlayer.y < (50 + 15)) {
+    } else if (leftPlayer.y < (50 + 15)) {      //colide on bottom
         leftPlayer.y = (50 + 15);
-    } else{}
+    } 
     
-    if (rightPlayer.y > (gameArea.canvas.height - 50 - 150 - 15)) {
+    if (rightPlayer.y > (gameArea.canvas.height - 50 - 150 - 15)) { //collide on bottom
         rightPlayer.y = (gameArea.canvas.height - 50 - 150 - 15);
-    } else if (rightPlayer.y < (50 + 15)) {
+    } else if (rightPlayer.y < (50 + 15)) {     //collide on bottom
         rightPlayer.y = (50 + 15);
-    } else{}
+    } 
+    
+    if (ball.y > (gameArea.canvas.height - 50 - 25)) {      //bounce ball on bottom
+        ball.speedY -= (2 * ball.speedY);
+    } else if (ball.y < (50)) {     //bounce ball on top
+        ball.speedY += -(2 * ball.speedY);
+    } 
+    
+    //ball bounce on player
+    // if (ball.y > (gameArea.canvas.height - 50 - 25)) {      //bounce ball on bottom
+    //     ball.speedY -= (2 * ball.speedY);
+    // } else if (ball.y < (50)) {     //bounce ball on top
+    //     ball.y += (2 * ball.speedY);
+    // } 
+    
 }
 
 function setScore() {
