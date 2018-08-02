@@ -1,8 +1,10 @@
 var leftPlayer;
 var rightPlayer;
 var ball;
+var singleplayer = false;
 
 window.onload = function() {
+    numberOfPlayers();
     gameArea.start();
     leftPlayer = new component(20, 150, "white", 30, gameArea.canvas.height / 2 - 75);
     rightPlayer = new component(20, 150, "white", gameArea.canvas.width - 50, gameArea.canvas.height / 2 - 75);
@@ -13,6 +15,7 @@ window.onload = function() {
     ball.speedX = 15;       //Adjust horizontal speed
     leftScore.text = leftPlayer.points;
     rightScore.text = rightPlayer.points;
+
 }
 
 
@@ -24,6 +27,7 @@ var gameArea = {
         this.canvas.height = (window.innerHeight - 20);
         this.context = this.canvas.getContext("2d");
         document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+        numberOfPlayers();
         this.interval = setInterval(updateGameArea, 20);
         window.addEventListener('keydown', function (e) {
             gameArea.keys = (gameArea.keys || []);
@@ -84,7 +88,11 @@ function placeOutline() {
 function updateGameArea() {
     gameArea.clear();
     placeOutline();
-    playerMovement();
+    if (singleplayer) {
+        singlePlayerMovement();
+    } else {
+        multiplayerMovement();
+    }
     leftPlayer.newPos();
     rightPlayer.newPos();
     ball.newPos();
@@ -96,26 +104,16 @@ function updateGameArea() {
     rightScore.update();
 }
 
-function playerMovement() {
-    rightPlayer.speedY = 0; 
-    if (gameArea.keys && gameArea.keys[38]) {rightPlayer.speedY = -5; }
-    if (gameArea.keys && gameArea.keys[40]) {rightPlayer.speedY = 5; }
-
-    leftPlayer.speedY = 0; 
-    if (gameArea.keys && gameArea.keys[87]) {leftPlayer.speedY = -5; }
-    if (gameArea.keys && gameArea.keys[83]) {leftPlayer.speedY = 5; }
-}
-
 function onCollision() {
-    if (leftPlayer.y > (gameArea.canvas.height - 50 - 150 - 15)) {      //collide on top
+    if (leftPlayer.y > (gameArea.canvas.height - 50 - 150 - 15)) {      //collide on bottom
         leftPlayer.y = (gameArea.canvas.height - 50 - 150 - 15);
-    } else if (leftPlayer.y < (50 + 15)) {      //colide on bottom
+    } else if (leftPlayer.y < (50 + 15)) {      //colide on top
         leftPlayer.y = (50 + 15);
     } 
     
     if (rightPlayer.y > (gameArea.canvas.height - 50 - 150 - 15)) { //collide on bottom
         rightPlayer.y = (gameArea.canvas.height - 50 - 150 - 15);
-    } else if (rightPlayer.y < (50 + 15)) {     //collide on bottom
+    } else if (rightPlayer.y < (50 + 15)) {     //collide on top
         rightPlayer.y = (50 + 15);
     } 
     
@@ -174,4 +172,44 @@ function bounceX() {
 
 function bounceY() {
     ball.speedY += -(2 * ball.speedY);
+}
+
+function multiplayerMovement() {
+    rightPlayer.speedY = 0; 
+    if (gameArea.keys && gameArea.keys[38]) {rightPlayer.speedY = -5; }
+    if (gameArea.keys && gameArea.keys[40]) {rightPlayer.speedY = 5; }
+
+    leftPlayer.speedY = 0; 
+    if (gameArea.keys && gameArea.keys[87]) {leftPlayer.speedY = -5; }
+    if (gameArea.keys && gameArea.keys[83]) {leftPlayer.speedY = 5; }
+}
+
+function singlePlayerMovement() {
+    rightPlayer.speedY = 0; 
+    if (gameArea.keys && gameArea.keys[38]) {rightPlayer.speedY = -5; }
+    if (gameArea.keys && gameArea.keys[40]) {rightPlayer.speedY = 5; }
+
+    leftPlayer.speedY = 0;
+    if (ball.speedX < 0) {
+        if ((ball.y + ball.height/2) < leftPlayer.y + leftPlayer.height/2) {
+            leftPlayer.speedY = -5;
+        }
+        if ((ball.y + ball.height/2) > leftPlayer.y + leftPlayer.height/2) {
+            leftPlayer.speedY = 5;
+        }
+    } else {
+        if (leftPlayer.y < (gameArea.canvas.height / 2 - 75)) {
+            leftPlayer.speedY = 5;
+        }
+        if (leftPlayer.y > (gameArea.canvas.height / 2 - 75)) {
+            leftPlayer.speedY = -5;
+        }
+    }
+}
+
+function numberOfPlayers() {
+    path = window.location.pathname;
+    if (path.search("singleplayer.html") > 0) {
+        singleplayer = true;
+    }
 }
