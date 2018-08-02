@@ -192,17 +192,33 @@ function singlePlayerMovement() {
     leftPlayer.speedY = 0;
     if (ball.speedX < 0) {
         if ((ball.y + ball.height/2) < leftPlayer.y + leftPlayer.height/2) {
-            leftPlayer.speedY = -5;
+            if (Math.abs((ball.y + ball.height/2) - (leftPlayer.y + leftPlayer.height/2)) < 5) {
+                leftPlayer.speedY = -1;
+            } else {
+                leftPlayer.speedY = -5;
+            }
         }
         if ((ball.y + ball.height/2) > leftPlayer.y + leftPlayer.height/2) {
-            leftPlayer.speedY = 5;
+            if (Math.abs((ball.y + ball.height/2) - (leftPlayer.y + leftPlayer.height/2)) < 5) {
+                leftPlayer.speedY = 1;
+            } else {
+                leftPlayer.speedY = 5;
+            }
         }
     } else {
         if (leftPlayer.y < (gameArea.canvas.height / 2 - 75)) {
-            leftPlayer.speedY = 5;
+            if (Math.abs(leftPlayer.y - (gameArea.canvas.height / 2 - 75)) < 5) {
+                leftPlayer.speedY = 1;
+            } else {
+                leftPlayer.speedY = 5;
+            }
         }
         if (leftPlayer.y > (gameArea.canvas.height / 2 - 75)) {
-            leftPlayer.speedY = -5;
+            if (Math.abs(leftPlayer.y - (gameArea.canvas.height / 2 - 75)) < 5) {
+                leftPlayer.speedY = -1;
+            } else {
+                leftPlayer.speedY = -5;
+            }
         }
     }
 }
