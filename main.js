@@ -141,10 +141,17 @@ function onCollision() {
     }
 }
 
+//Uncomment for dynamic angle based on ball position compared to player and previous angle
+//Can result in much greater angles as they quickly add up
+//Consider changing movement speed as ball can move much faster on the Y-axis
 function bounceAngle(player) {
-    ball.speedY = -(((player.y + 75) - (ball.y + ball.height/2)) / 10);         //Adjust divider for higher/lower angle
-    
+        ball.speedY += -(((player.y + 75) - (ball.y + ball.height/2)) / 10);         //Adjust divider for higher/lower angle
 }
+
+//Uncomment for static angle based on ball position compared to player
+// function bounceAngle(player) {
+//         ball.speedY = -(((player.y + 75) - (ball.y + ball.height/2)) / 10);         //Adjust divider for higher/lower angle
+// }
 
 function goal(player) {
     player.points += 1;
@@ -193,7 +200,7 @@ function singlePlayerMovement() {
     if (ball.speedX < 0) {
         if ((ball.y + ball.height/2) < leftPlayer.y + leftPlayer.height/2) {
             if (Math.abs((ball.y + ball.height/2) - (leftPlayer.y + leftPlayer.height/2)) < 5) {
-                leftPlayer.speedY = -1;
+                leftPlayer.speedY = -1;         //Fine adjustments for a smoother look
             } else {
                 leftPlayer.speedY = -5;
             }
